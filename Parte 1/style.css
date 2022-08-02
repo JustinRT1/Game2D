@@ -1,4 +1,4 @@
-#canvas1{
+#canvas1 {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -15,6 +15,8 @@
     transform: translate(-50%);
 }
 
-.controls, select, option {
+.controls,
+select,
+option {
     font-size: 25px;
 }
