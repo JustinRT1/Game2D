@@ -35,7 +35,7 @@ class Explosion {
         ctx.save()
         ctx.translate(this.x, this.y) // Establece un punto de rotacion que sera alrededor del centro
         ctx.rotate(this.angle)
-        ctx.drawImage(this.image, this.spriteWidth * this.frame, 0, this.spriteWidth, this.spriteHeight, 0 - this.width/2, 0 - this.height/2, this.width, this.height)
+        ctx.drawImage(this.image, this.spriteWidth * this.frame, 0, this.spriteWidth, this.spriteHeight, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height)
         ctx.restore()
     }
 }
