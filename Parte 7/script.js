@@ -4,6 +4,7 @@ window.addEventListener('load', function () {
     const ctx = canvas.getContext('2d')
     canvas.width = 800
     canvas.height = 720
+    let enemies = []
 
     class InputHandler {
         constructor() {
@@ -43,11 +44,6 @@ window.addEventListener('load', function () {
             this.vy = 0
             this.weight = 1
         }
-        draw(context) {
-            context.fillStyle = 'white'
-            context.fillRect(this.x, this.y, this.width, this.height)
-            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height)
-        }
         update(input) {
             if (input.keys.indexOf('ArrowRight') > -1) {
                 this.speed = 5
@@ -73,6 +69,9 @@ window.addEventListener('load', function () {
             }
             if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height
         }
+        draw(context) {
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height)
+        }
         onGround() {
             return this.y >= this.gameHeight - this.height
         }
@@ -80,15 +79,57 @@ window.addEventListener('load', function () {
 
 
     class Background {
-
+        constructor(gameWidth, gameHeight) {
+            this.gameWidth = gameWidth
+            this.gameHeight = gameHeight
+            this.image = backgroundImage
+            this.x = 0
+            this.y = 0
+            this.width = 2400
+            this.height = 720
+            this.speed = 7
+        }
+        update() {
+            this.x -= this.speed
+            if (this.x < 0 - this.width) this.x = 0
+        }
+        draw(context) {
+            context.drawImage(this.image, this.x, this.y, this.width, this.height)
+            context.drawImage(this.image, this.x + this.width - this.speed, this.y, this.width, this.height)
+        }
     }
 
     class Enemy {
-
+        constructor(gameWidth, gameHeight) {
+            this.gameWidth = gameWidth
+            this.gameHeight = gameHeight
+            this.width = 160
+            this.height = 119
+            this.image = enemyImage
+            this.x = this.gameWidth
+            this.y = this.gameHeight - this.height
+            this.frameX = 0
+            this.speed = 8
+        }
+        update() {
+            this.x -= this.speed
+        }
+        draw(context) {
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height)
+        }
     }
 
-    function handleEnemies() {
-
+    function handleEnemies(deltaTime) {
+        if (enemyTimer > enemyInterval + randomEnemyInterval) {
+            enemies.push(new Enemy(canvas.width, canvas.height))
+            enemyTimer = 0
+        } else {
+            enemyTimer += deltaTime
+        }
+        enemies.forEach(enemy => {
+            enemy.draw(ctx)
+            enemy.update()
+        })
     }
 
     function displayStatusText() {
@@ -97,12 +138,23 @@ window.addEventListener('load', function () {
 
     const input = new InputHandler()
     const player = new Player(canvas.width, canvas.height)
+    const background = new Background(canvas.width, canvas.height)
 
-    function animate() {
+    let lastTime = 0
+    let enemyTimer = 0
+    let enemyInterval = 2000
+    let randomEnemyInterval = Math.random() * 1000 + 500
+
+    function animate(timeStamp) {
+        const deltaTime = timeStamp - lastTime
+        lastTime = timeStamp
         ctx.clearRect(0, 0, canvas.width, canvas.height)
+        background.draw(ctx)
+        background.update()
         player.draw(ctx)
         player.update(input)
+        handleEnemies(deltaTime)
         requestAnimationFrame(animate)
     }
-    animate()
+    animate(0)
 })
