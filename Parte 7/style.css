@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     background: black;
 }
@@ -21,4 +22,13 @@ body {
 #backgroundImage,
 #enemyImage {
     display: none;
+}
+
+#fullScreenButton {
+    position: absolute;
+    font-size: 20px;
+    padding: 10px;
+    top: 30px;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
